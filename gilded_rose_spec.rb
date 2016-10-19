@@ -21,6 +21,18 @@ describe GildedRose do
       expect(items[0].quality).to eq 18
     end
 
+    it "degrades quality of Conjured items by 2" do
+      items = [Conjured.new("Conjured",10,20)]
+      GildedRose.new(items).update_quality
+      expect(items[0].quality).to eq 18
+    end
+
+    it "degrades quality of Conuured items by 4 when sell_in is at 0" do
+      items = [Conjured.new("foo",0,20)]
+      GildedRose.new(items).update_quality
+      expect(items[0].quality).to eq 16
+    end
+
     it "degrades sell_in of normal items by 1" do
       items = [StandardItem.new("foo",10,20)]
       GildedRose.new(items).update_quality

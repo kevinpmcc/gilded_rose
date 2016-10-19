@@ -91,6 +91,22 @@ STANDARD_ITEM_QUALITY_DEGRADATION = 1
 end
 
 
+class Conjured < Item
+
+ITEM_QUALITY_DEGRADATION = 2
+
+  def update_quality
+    if @quality > 0
+      if @sell_in > 0
+        decrease_quality(ITEM_QUALITY_DEGRADATION)
+      else
+        decrease_quality(ITEM_QUALITY_DEGRADATION * 2)
+      end
+    end
+  end
+end
+
+
 
 
 =begin
