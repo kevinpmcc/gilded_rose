@@ -1,11 +1,10 @@
 class GildedRose
 
-
   def initialize(items)
     @items = items
   end
 
-  def update_quality
+  def daily_item_update
     @items.each do |item|
       if item.name != "Sulfuras, Hand of Ragnaros"
         item.decrease_sell_in
@@ -16,11 +15,10 @@ class GildedRose
 end
 
 
-
 class Item
 
-  MAXIMUM_QUALITY = 50
   attr_reader :name, :sell_in, :quality
+
 
   def initialize(name, sell_in, quality)
     @name = name
@@ -31,11 +29,13 @@ class Item
   def to_s()
     "#{@name}, #{@sell_in}, #{@quality}"
   end
+end
 
+
+module AmmendItems
+  MAXIMUM_QUALITY = 50
   def decrease_sell_in
-    if @sell_in > 0
-      @sell_in -=1
-    end
+    @sell_in -= 1 if @sell_in > 0
   end
 
   def increase_quality(amount)
@@ -47,7 +47,9 @@ class Item
   end
 end
 
+
 class AgedBrie < Item
+  include AmmendItems
 
   def update_quality
     increase_quality(1)
@@ -57,6 +59,7 @@ end
 
 
 class BackstagePass < Item
+  include AmmendItems
 
   def update_quality
     case @sell_in
@@ -76,33 +79,20 @@ end
 
 
 class StandardItem < Item
-
-STANDARD_ITEM_QUALITY_DEGRADATION = 1
+  include AmmendItems
+  QUALITY_DEGRADATION_RATE = 1
 
   def update_quality
-    if @quality > 0
-      if @sell_in > 0
-        decrease_quality(STANDARD_ITEM_QUALITY_DEGRADATION)
-      else
-        decrease_quality(STANDARD_ITEM_QUALITY_DEGRADATION * 2)
-      end
-    end
+      @sell_in > 0 ? decrease_quality(QUALITY_DEGRADATION_RATE) : decrease_quality(QUALITY_DEGRADATION_RATE * 2)
   end
 end
 
 
 class Conjured < Item
-
-ITEM_QUALITY_DEGRADATION = 2
-
+  include AmmendItems
+  QUALITY_DEGRADATION_RATE = 2
   def update_quality
-    if @quality > 0
-      if @sell_in > 0
-        decrease_quality(ITEM_QUALITY_DEGRADATION)
-      else
-        decrease_quality(ITEM_QUALITY_DEGRADATION * 2)
-      end
-    end
+    @sell_in > 0 ? decrease_quality(QUALITY_DEGRADATION_RATE) : decrease_quality(QUALITY_DEGRADATION_RATE * 2)
   end
 end
 
